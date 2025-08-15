@@ -1,0 +1,14 @@
+name = "telegram-forcejoin-worker"
+main = "src/worker.ts"
+compatibility_date = "2024-12-01"
+[vars]
+BASE_URL = "https://your-worker.your-subdomain.workers.dev"
+[[d1_databases]]
+binding = "DB"
+database_name = "tg_forcejoin"
+database_id = "REPLACE_WITH_D1_ID"
+[[kv_namespaces]]
+binding = "CACHE"
+id = "REPLACE_WITH_KV_ID"
+[observability]
+enabled = true
