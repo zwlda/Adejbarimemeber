@@ -1,0 +1,6 @@
+export async function tgCall(token:string, method:string, body:any){ const res = await fetch(`https://api.telegram.org/bot${token}/${method}`, {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(body)}); const j = await res.json(); if(!j.ok) throw new Error(JSON.stringify(j)); return j.result; }
+export async function sendMessage(token:string, chat_id:number, text:string, kb?:any){ return tgCall(token,'sendMessage',{chat_id,text,parse_mode:'HTML',reply_markup:kb}); }
+export function kbInline(rows:any[][]){ return { inline_keyboard: rows.map(r=>r.map(b=>({text:b.text,callback_data:b.data,url:b.url}))) }; }
+export async function sendByFileId(token:string, chat_id:number, file_type:string, file_id:string, caption?:string){ const m={chat_id,caption}; if(file_type==='photo') m['photo']=file_id; else if(file_type==='video') m['video']=file_id; else m['document']=file_id; return tgCall(token, file_type==='photo'?'sendPhoto': file_type==='video'?'sendVideo':'sendDocument', m); }
+export async function getChatMember(token:string, chat_id:number|string, user_id:number){ try{ return await tgCall(token,'getChatMember',{chat_id,user_id}); }catch(e){ return null; } }
+export async function getMe(token:string){ return tgCall(token,'getMe',{}); }

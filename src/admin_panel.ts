@@ -1,0 +1,6 @@
+import { sendMessage, kbInline } from './telegram';
+import { saveFile, addForcedChannelRecord, listForcedChannels } from './db';
+export async function adminStart(ctx:any){ const kb = kbInline([[{text:'➕ آپلود تکی', data:'up_single'},{text:'📊 آمار', data:'stats'}]]); await sendMessage(ctx.token, ctx.chat_id, 'پنل مدیریت', kb); }
+export async function onAdminMedia(ctx:any, file:any, file_type:string, caption?:string){ const {id,code} = await saveFile(ctx.env, ctx.main_bot_id, ctx.user_id, {file_type,file_id:file.file_id,size:file.file_size||null,mime_type:file.mime_type||null,caption}); const link = `${ctx.env.BASE_URL}/dl/${code}`; await sendMessage(ctx.token, ctx.chat_id, `لینک: ${link}`); }
+export async function addChannelByForward(ctx:any, forward_chat:any){ await addForcedChannelRecord(ctx.env, ctx.main_bot_id, forward_chat.id, forward_chat.username||null, forward_chat.title||null); await sendMessage(ctx.token, ctx.chat_id, 'کانال ثبت شد'); }
+export async function cmdListChannels(ctx:any){ const l = await listForcedChannels(ctx.env, ctx.main_bot_id); const rows = (l.results||[]).map((r:any)=>`${r.id}: ${r.title||r.username||r.chat_id}`).join('\n')||'خالی'; await sendMessage(ctx.token, ctx.chat_id, rows); }
